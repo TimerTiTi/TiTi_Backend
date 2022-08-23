@@ -17,11 +17,11 @@ app.use("/auth", authRouter);
 
 const NOTFOUND_ERROR = { error: "Not Found" };
 const INTERNAL_ERROR = { error: "Internal Server Error" };
-// 404
+// NOTFOUND_ERROR
 app.use((req, res, next) => {
   return res.status(404).json(NOTFOUND_ERROR);
 });
-// ERROR
+// INTERNAL_ERROR
 app.use((error, req, res, next) => {
   console.error(error);
   return res.status(500).json(INTERNAL_ERROR);
