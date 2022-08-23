@@ -22,6 +22,11 @@ export async function signup(req, res) {
   res.status(201).json({ token, userId, username, email });
 }
 
+export async function getAll(req, res) {
+  const data = await userRepository.getAll();
+  res.status(200).json(data);
+}
+
 function createJwtToken(id) {
   return jwt.sign({ id }, config.jwt.secretKey, {
     expiresIn: config.jwt.expiresInSec,

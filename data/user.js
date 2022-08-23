@@ -11,3 +11,8 @@ export async function findById(id) {
 export async function findByUsernameAndEmail(username, email) {
   return User.findOne({ where: { username: username, email: email } });
 }
+
+// 관리자용 api
+export async function getAll() {
+  return User.findAll();
+}
