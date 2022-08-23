@@ -15,14 +15,16 @@ app.use(morgan("tiny"));
 // Router
 app.use("/auth", authRouter);
 
+const NOTFOUND_ERROR = { error: "Not Found" };
+const INTERNAL_ERROR = { error: "Internal Server Error" };
 // 404
 app.use((req, res, next) => {
-  res.sendStatus(404);
+  return res.status(404).json(NOTFOUND_ERROR);
 });
 // ERROR
 app.use((error, req, res, next) => {
   console.error(error);
-  res.sendStatus(500);
+  return res.status(500).json(INTERNAL_ERROR);
 });
 // Server start
 sequelize.sync().then(() => {
