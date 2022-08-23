@@ -1,6 +1,7 @@
 import express from "express";
 import {} from "express-async-errors";
 import { body } from "express-validator";
+import * as authController from "../controller/auth.js";
 
 const router = express.Router();
 
@@ -21,6 +22,6 @@ const validateSignup = [
   body("email").isEmail().normalizeEmail().withMessage("invalid email"),
 ];
 
-router.post("/signup", validateSignup);
+router.post("/signup", validateSignup, authController.signup);
 
 export default router;
