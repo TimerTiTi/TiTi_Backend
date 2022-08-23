@@ -8,6 +8,10 @@ export async function findById(id) {
   return User.findByPk(id);
 }
 
+export async function findByUsername(username) {
+  return User.findOne({ where: { username: username } });
+}
+
 export async function findByUsernameAndEmail(username, email) {
   return User.findOne({ where: { username: username, email: email } });
 }
