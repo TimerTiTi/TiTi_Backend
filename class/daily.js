@@ -1,7 +1,8 @@
 export class Daily {
   constructor(dailyObject) {
     // Object.assign(this, dailyObject);
-    this.day = dailyObject.day;
+    // this.day = dailyObject.day;
+    this.day = new Date();
     this.maxTime = dailyObject.maxTime;
     this.tasks = dailyObject.tasks;
     this.timeline = dailyObject.timeline;
