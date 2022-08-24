@@ -1,10 +1,12 @@
 import express from "express";
 import { config } from "./config.js";
 import { sequelize } from "./db/database.js";
-import authRouter from "./router/auth.js";
 import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
+
+import authRouter from "./router/auth.js";
+import dailyRouter from "./router/daily.js";
 
 const app = express();
 app.use(express.json());
@@ -14,6 +16,7 @@ app.use(morgan("tiny"));
 
 // Router
 app.use("/auth", authRouter);
+app.use("/daily", dailyRouter);
 
 const NOTFOUND_ERROR = { error: "Not Found" };
 const INTERNAL_ERROR = { error: "Internal Server Error" };
