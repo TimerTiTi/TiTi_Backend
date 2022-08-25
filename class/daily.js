@@ -1,7 +1,6 @@
 export class Daily {
   constructor(dailyObject) {
     this.day = this.swiftToDate(dailyObject.day);
-    console.log(this.day.toString());
     this.maxTime = dailyObject.maxTime;
     this.tasks = dailyObject.tasks;
     this.timeline = dailyObject.timeline;
