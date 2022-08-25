@@ -1,5 +1,6 @@
 import { sequelize } from "../db/database.js";
 import SQ from "sequelize";
+import { User } from "./user.js";
 
 const DataTypes = SQ.DataTypes;
 
@@ -31,3 +32,4 @@ export const Daily = sequelize.define("daily", {
     allowNull: true,
   },
 });
+Daily.belongsTo(User);

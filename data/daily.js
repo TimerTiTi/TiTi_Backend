@@ -1,7 +1,15 @@
 import { Daily } from "../schema/daily.js";
 
-export async function createDaily(daily) {
-  return Daily.create(daily).then((data) => data.dataValues.id);
+export async function createDaily(daily, userId) {
+  const { day, maxTime, timeline, tasks, taskHistorys } = daily;
+  return Daily.create({
+    day,
+    maxTime,
+    timeline,
+    tasks,
+    taskHistorys,
+    userId,
+  }).then((data) => data.dataValues.id);
 }
 
 // 관리자용 api

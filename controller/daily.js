@@ -3,10 +3,11 @@ import { Daily } from "../class/daily.js";
 import * as dailyRepository from "../data/daily.js";
 
 export async function createDailys(req, res) {
+  console.log(req.userId);
   const dailys = req.body;
   dailys.forEach((dailyObject) => {
     const daily = new Daily(dailyObject);
-    const createdDailyId = dailyRepository.createDaily(daily);
+    const createdDailyId = dailyRepository.createDaily(daily, req.userId);
     console.log(createdDailyId);
   });
   res.sendStatus(201);
