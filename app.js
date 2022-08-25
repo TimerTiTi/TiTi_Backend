@@ -7,6 +7,7 @@ import morgan from "morgan";
 
 import authRouter from "./router/auth.js";
 import dailyRouter from "./router/daily.js";
+import timelineRouter from "./router/timeline.js";
 
 const app = express();
 app.use(express.json());
@@ -16,7 +17,8 @@ app.use(morgan("tiny"));
 
 // Router
 app.use("/auth", authRouter);
-app.use("/daily", dailyRouter);
+app.use("/dailys", dailyRouter);
+app.use("/timelines", timelineRouter);
 
 const NOTFOUND_ERROR = { error: "Not Found" };
 const INTERNAL_ERROR = { error: "Internal Server Error" };

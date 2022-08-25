@@ -1,15 +1,23 @@
 import {} from "express-async-errors";
 import { Daily } from "../class/daily.js";
 import * as dailyRepository from "../data/daily.js";
+import * as timelineRepository from "../data/timeline.js";
 
 export async function createDailys(req, res) {
   console.log(req.userId);
   const dailys = req.body;
-  dailys.forEach((dailyObject) => {
+  for (const dailyObject of dailys) {
     const daily = new Daily(dailyObject);
-    const createdDailyId = dailyRepository.createDaily(daily, req.userId);
-    console.log(createdDailyId);
-  });
+    const createdDailyId = await dailyRepository.createDaily(daily, req.userId);
+    const createdTimelineId = await timelineRepository.createTimeline(
+      daily.timeline,
+      req.userId,
+      createdDailyId
+    );
+    console.log(
+      `created daily(${createdDailyId}), timeline(${createdTimelineId})`
+    );
+  }
   res.sendStatus(201);
 }
 
