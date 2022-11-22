@@ -5,7 +5,8 @@ import * as dailyController from "../controller/daily.js";
 
 const router = express.Router();
 
-router.post("/", isAuth, dailyController.createDailys);
-router.get("/", isAuth, dailyController.getAll);
+router.post("/all", isAuth, dailyController.createDailys);
+router.get("/", isAuth, dailyController.getDailys);
+router.get("/master", isAuth, dailyController.getAll);
 
 export default router;

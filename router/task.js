@@ -5,6 +5,7 @@ import * as taskController from "../controller/task.js";
 
 const router = express.Router();
 
-router.get("/", isAuth, taskController.getAll);
+router.get("/", isAuth, taskController.getTasks);
+router.get("/master", isAuth, taskController.getAll);
 
 export default router;
