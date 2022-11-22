@@ -34,6 +34,13 @@ export async function createDailys(req, res) {
   res.sendStatus(201);
 }
 
+export async function getDailys(req, res) {
+  console.log(req.userId);
+  const data = await dailyRepository.getAllByUserid(req.userId);
+  res.status(200).json(data);
+}
+
+// master: getAll dailys
 export async function getAll(req, res) {
   const data = await dailyRepository.getAll();
   res.status(200).json(data);

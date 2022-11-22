@@ -31,6 +31,12 @@ export async function createTimeline(timeline, userId, dailyId) {
   }).then((data) => data.dataValues.id);
 }
 
+export async function getAllByUserid(userId) {
+  return Timeline.findAll({
+    where: { userId },
+  });
+}
+
 // 관리자용 api
 export async function getAll() {
   return Timeline.findAll();
