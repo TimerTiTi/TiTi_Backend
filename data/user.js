@@ -12,11 +12,15 @@ export async function findByUsername(username) {
   return User.findOne({ where: { username: username } });
 }
 
-export async function findByUsernameAndEmail(username, email) {
-  return User.findOne({ where: { username: username, email: email } });
+export async function findByEmail(email) {
+  return User.findOne({ where: { email: email } });
 }
 
 // 관리자용 api
+export async function dropUser() {
+  return User.drop();
+}
+
 export async function getAll() {
   return User.findAll();
 }

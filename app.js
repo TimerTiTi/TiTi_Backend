@@ -9,6 +9,7 @@ import authRouter from "./router/auth.js";
 import dailyRouter from "./router/daily.js";
 import timelineRouter from "./router/timeline.js";
 import taskRouter from "./router/task.js";
+import masterRouter from "./router/master.js";
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use("/auth", authRouter);
 app.use("/dailys", dailyRouter);
 app.use("/timelines", timelineRouter);
 app.use("/tasks", taskRouter);
+app.use("/master", masterRouter);
 
 const NOTFOUND_ERROR = { error: "Not Found" };
 const INTERNAL_ERROR = { error: "Internal Server Error" };

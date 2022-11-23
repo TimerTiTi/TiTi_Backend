@@ -8,20 +8,21 @@ const INVALID_AUTH = { error: "Invalid Auth" };
 
 export async function signup(req, res) {
   const { username, password, email } = req.body;
-  const found = await userRepository.findByUsernameAndEmail(username, email);
-  if (found) {
-    return res
-      .status(409)
-      .json({ error: `${username}: ${email} already exists` });
+  // username check
+  const foundUsername = await userRepository.findByUsername(username);
+  // email check
+  const foundEmail = await userRepository.findByEmail(email);
+  if (foundUsername || foundEmail) {
+    return res.status(409).json({ error: "user infos must be unique" });
   }
   const hashed = await bcrypt.hash(password, config.bcrypt.saltRounds);
-  const userId = await userRepository.createUser({
+  const id = await userRepository.createUser({
     username,
     password: hashed,
     email,
   });
-  const token = createJwtToken(userId);
-  res.status(201).json({ token, userId, username, email });
+  const token = createJwtToken(id);
+  res.status(201).json({ token, id, username, email });
 }
 
 export async function login(req, res) {
