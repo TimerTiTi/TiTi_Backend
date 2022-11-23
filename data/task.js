@@ -16,6 +16,10 @@ export async function getAllByUserid(userId) {
 }
 
 // 관리자용 api
+export async function dropTask() {
+  return Task.drop();
+}
+
 export async function getAll() {
   return Task.findAll();
 }
