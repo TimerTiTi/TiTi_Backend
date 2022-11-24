@@ -9,9 +9,11 @@ export async function createDailys(req, res) {
   const dailys = req.body;
   for (const dailyObject of dailys) {
     const daily = new Daily(dailyObject);
-    // daily 생성
+    // daily.status = "created" 설정
+    daily.status = "created";
+    // DB 내 daily 생성
     const createdDailyId = await dailyRepository.createDaily(daily, req.userId);
-    // daily -> tineline 생성
+    // daily -> DB 내 tineline 생성
     const createdTimelineId = await timelineRepository.createTimeline(
       daily.timeline,
       req.userId,
@@ -20,7 +22,7 @@ export async function createDailys(req, res) {
     console.log(
       `created daily(${createdDailyId}), timeline(${createdTimelineId})`
     );
-    // daily -> task 생성
+    // daily -> DB 내 task 생성
     for (const key in daily.tasks) {
       const createdTaskId = await taskRepository.createTask(
         key,

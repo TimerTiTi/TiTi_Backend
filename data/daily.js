@@ -1,7 +1,7 @@
 import { Daily } from "../schema/daily.js";
 
 export async function createDaily(daily, userId) {
-  const { day, maxTime, timeline, tasks, taskHistorys } = daily;
+  const { day, maxTime, timeline, tasks, taskHistorys, status } = daily;
   return Daily.create({
     day,
     maxTime,
@@ -9,6 +9,7 @@ export async function createDaily(daily, userId) {
     tasks,
     taskHistorys,
     userId,
+    status,
   }).then((data) => data.dataValues.id);
 }
 

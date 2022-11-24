@@ -31,5 +31,10 @@ export const Daily = sequelize.define("daily", {
     type: DataTypes.JSON,
     allowNull: true,
   },
+  status: {
+    // uploaded, edited, created
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 Daily.belongsTo(User);
