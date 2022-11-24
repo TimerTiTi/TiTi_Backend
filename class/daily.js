@@ -7,6 +7,7 @@ export class Daily {
     this.taskHistorys = dailyObject.taskHistorys
       ? dailyObject.taskHistorys
       : null;
+    this.status = !!dailyObject.status == true ? dailyObject.status : null;
   }
 
   swiftToDate(ti) {
