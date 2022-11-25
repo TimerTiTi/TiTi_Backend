@@ -19,6 +19,22 @@ export async function getAllByUserid(userId) {
   });
 }
 
+export async function findById(id) {
+  return Daily.findByPk(id);
+}
+
+export async function updateDailyById(id, localDaily) {
+  return Daily.findByPk(id) //
+    .then((daily) => {
+      daily.maxTime = localDaily.maxTime;
+      daily.tasks = localDaily.tasks;
+      daily.timeline = localDaily.timeline;
+      daily.taskHistorys = localDaily.taskHistorys;
+      daily.status = "uploaded";
+      return daily.save();
+    });
+}
+
 // 관리자용 api
 export async function dropDaily() {
   return Daily.drop();

@@ -1,5 +1,6 @@
 export class Daily {
   constructor(dailyObject) {
+    this.id = !!dailyObject.id == true ? dailyObject.id : null;
     this.day = this.swiftToDate(dailyObject.day);
     this.maxTime = dailyObject.maxTime;
     this.tasks = dailyObject.tasks;

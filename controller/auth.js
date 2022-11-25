@@ -22,6 +22,7 @@ export async function signup(req, res) {
     email,
   });
   const token = createJwtToken(id);
+  console.log(`CREATE User(${id})`);
   res.status(201).json({ token, id, username, email });
 }
 
@@ -37,12 +38,8 @@ export async function login(req, res) {
   }
   // success
   const token = createJwtToken(user.id);
+  console.log(`User(${user.id})`);
   res.status(200).json({ token, id: user.id, username, email: user.email });
-}
-
-export async function getAll(req, res) {
-  const data = await userRepository.getAll();
-  res.status(200).json(data);
 }
 
 // jwt 내 id 값 저장
@@ -50,4 +47,10 @@ function createJwtToken(id) {
   return jwt.sign({ id }, config.jwt.secretKey, {
     expiresIn: config.jwt.expiresInSec,
   });
+}
+
+// master
+export async function getAll(req, res) {
+  const data = await userRepository.getAll();
+  res.status(200).json(data);
 }
