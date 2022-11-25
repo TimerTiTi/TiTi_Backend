@@ -5,7 +5,8 @@ import * as dailyController from "../controller/daily.js";
 
 const router = express.Router();
 
-router.post("/all", isAuth, dailyController.createDailys);
+router.post("/create", isAuth, dailyController.createDailys);
+router.post("/upload", isAuth, dailyController.uploadDailys);
 router.get("/", isAuth, dailyController.getDailys);
 router.get("/master", isAuth, dailyController.getAll);
 
