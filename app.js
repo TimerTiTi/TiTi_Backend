@@ -12,7 +12,18 @@ import taskRouter from "./router/task.js";
 import masterRouter from "./router/master.js";
 
 const app = express();
-app.use(express.json());
+// parser 용량제한 해제
+app.use(
+  express.json({
+    limit: "50mb",
+  })
+);
+app.use(
+  express.urlencoded({
+    limit: "50mb",
+    extended: false,
+  })
+);
 app.use(helmet());
 app.use(cors());
 app.use(morgan("tiny"));
