@@ -15,6 +15,12 @@ export async function getAllByUserid(userId) {
   });
 }
 
+export async function deleteAllByDailyIdAndUserId(dailyId, userId) {
+  return Task.destroy({
+    where: { dailyId, userId },
+  });
+}
+
 // 관리자용 api
 export async function dropTask() {
   return Task.drop();

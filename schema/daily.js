@@ -1,6 +1,7 @@
 import { sequelize } from "../db/database.js";
 import SQ from "sequelize";
 import { User } from "./user.js";
+import moment from "moment";
 
 const DataTypes = SQ.DataTypes;
 
@@ -14,6 +15,12 @@ export const Daily = sequelize.define("daily", {
   day: {
     type: DataTypes.DATE,
     allowNull: false,
+    get() {
+      return (
+        moment(this.getDataValue("day")).utc().format("YYYY-MM-DDTHH:mm:ss") +
+        "Z"
+      );
+    },
   },
   maxTime: {
     type: DataTypes.INTEGER,
@@ -35,6 +42,26 @@ export const Daily = sequelize.define("daily", {
     // uploaded, edited, created
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    get() {
+      return (
+        moment(this.getDataValue("createdAt"))
+          .utc()
+          .format("YYYY-MM-DDTHH:mm:ss") + "Z"
+      );
+    },
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    get() {
+      return (
+        moment(this.getDataValue("updatedAt"))
+          .utc()
+          .format("YYYY-MM-DDTHH:mm:ss") + "Z"
+      );
+    },
   },
 });
 Daily.belongsTo(User);

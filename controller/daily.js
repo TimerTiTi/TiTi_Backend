@@ -75,15 +75,37 @@ export async function uploadDailys(req, res) {
         continue;
       }
       // UPDATE Daily
-      const updated = dailyRepository.updateDailyById(DBDaily.id, localDaily);
+      const updatedDaily = await dailyRepository.updateDailyById(
+        DBDaily.id,
+        localDaily
+      );
       console.log(`UPDATE Daily(${DBDaily.id})`);
-      // DELETE , UPDATE Timeline
-
-      // DELETE , UPDATE Tasks
+      // UPDATE Timeline
+      const updatedTimeline = await timelineRepository.updateTimelineByDailyId(
+        DBDaily.id,
+        localDaily
+      );
+      console.log(`UPDATE Timeline(${updatedTimeline})`);
+      // DELETE Tasks
+      const deletedTasks = await taskRepository.deleteAllByDailyIdAndUserId(
+        DBDaily.id,
+        DBDaily.userId
+      );
+      console.log(`DELETE  ${deletedTasks} Tasks from Daily(${DBDaily.id})`);
+      // CREATE Tasks
+      for (const key in localDaily.tasks) {
+        const createdTaskId = await taskRepository.createTask(
+          key,
+          localDaily.tasks[key],
+          req.userId,
+          DBDaily.id
+        );
+        console.log(`CREATE Task(${createdTaskId})`);
+      }
     }
   }
   if (success) {
-    res.sendStatus(201);
+    res.sendStatus(200);
   } else {
     return res.status(400).json({ error: `${errorIds}` });
   }
