@@ -1,5 +1,6 @@
 import { sequelize } from "../db/database.js";
 import SQ from "sequelize";
+import moment from "moment";
 
 const DataTypes = SQ.DataTypes;
 
@@ -23,5 +24,25 @@ export const User = sequelize.define("user", {
     type: DataTypes.STRING(128),
     allowNull: false,
     unique: true,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    get() {
+      return (
+        moment(this.getDataValue("createdAt"))
+          .utc()
+          .format("YYYY-MM-DDTHH:mm:ss") + "Z"
+      );
+    },
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    get() {
+      return (
+        moment(this.getDataValue("updatedAt"))
+          .utc()
+          .format("YYYY-MM-DDTHH:mm:ss") + "Z"
+      );
+    },
   },
 });

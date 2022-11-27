@@ -37,6 +37,40 @@ export async function getAllByUserid(userId) {
   });
 }
 
+export async function updateTimelineByDailyId(dailyId, localDaily) {
+  return Timeline.findOne({
+    where: { dailyId },
+  })
+    .then((timeline) => {
+      timeline.time0 = localDaily.timeline[0];
+      timeline.time1 = localDaily.timeline[1];
+      timeline.time2 = localDaily.timeline[2];
+      timeline.time3 = localDaily.timeline[3];
+      timeline.time4 = localDaily.timeline[4];
+      timeline.time5 = localDaily.timeline[5];
+      timeline.time6 = localDaily.timeline[6];
+      timeline.time7 = localDaily.timeline[7];
+      timeline.time8 = localDaily.timeline[8];
+      timeline.time9 = localDaily.timeline[9];
+      timeline.time10 = localDaily.timeline[10];
+      timeline.time11 = localDaily.timeline[11];
+      timeline.time12 = localDaily.timeline[12];
+      timeline.time13 = localDaily.timeline[13];
+      timeline.time14 = localDaily.timeline[14];
+      timeline.time15 = localDaily.timeline[15];
+      timeline.time16 = localDaily.timeline[16];
+      timeline.time17 = localDaily.timeline[17];
+      timeline.time18 = localDaily.timeline[18];
+      timeline.time19 = localDaily.timeline[19];
+      timeline.time20 = localDaily.timeline[20];
+      timeline.time21 = localDaily.timeline[21];
+      timeline.time22 = localDaily.timeline[22];
+      timeline.time23 = localDaily.timeline[23];
+      return timeline.save();
+    })
+    .then((data) => data.dataValues.id);
+}
+
 // 관리자용 api
 export async function dropTimeline() {
   return Timeline.drop();
