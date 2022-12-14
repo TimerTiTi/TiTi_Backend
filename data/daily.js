@@ -1,4 +1,6 @@
 import { Daily } from "../schema/daily.js";
+import { sequelize } from "../db/database.js";
+import { QueryTypes } from "sequelize";
 
 export async function createDaily(daily, userId) {
   const { day, maxTime, timeline, tasks, taskHistorys, status } = daily;
@@ -14,9 +16,17 @@ export async function createDaily(daily, userId) {
 }
 
 export async function getAllByUserid(userId) {
-  return Daily.findAll({
-    where: { userId },
-  });
+  // return Daily.findAll({
+  //   where: { userId },
+  // });
+  console.log("query style");
+  const users = await sequelize.query(
+    `SELECT * FROM dailies WHERE userId = ${userId}`,
+    {
+      type: QueryTypes.SELECT,
+    }
+  );
+  return users;
 }
 
 export async function findById(id) {
