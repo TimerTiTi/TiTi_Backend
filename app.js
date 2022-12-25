@@ -10,6 +10,7 @@ import dailyRouter from "./router/daily.js";
 import timelineRouter from "./router/timeline.js";
 import taskRouter from "./router/task.js";
 import masterRouter from "./router/master.js";
+import syncLogRouter from "./router/syncLog.js";
 
 const app = express();
 // parser 용량제한 해제
@@ -26,7 +27,7 @@ app.use(
 );
 app.use(helmet());
 app.use(cors());
-app.use(morgan("tiny"));
+app.use(morgan("[:date[iso]] :method :url :status :response-time ms"));
 
 // Router
 app.use("/auth", authRouter);
@@ -34,6 +35,7 @@ app.use("/dailys", dailyRouter);
 app.use("/timelines", timelineRouter);
 app.use("/tasks", taskRouter);
 app.use("/master", masterRouter);
+app.use("/syncLog", syncLogRouter);
 
 const NOTFOUND_ERROR = { error: "Not Found" };
 const INTERNAL_ERROR = { error: "Internal Server Error" };
