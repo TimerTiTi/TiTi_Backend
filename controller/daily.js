@@ -82,6 +82,11 @@ export async function uploadDailys(req, res) {
     // daily.id 값 확인
     if (localDaily.id == null) {
       // 같은 Day 의 Daily 가 있는지 확인
+      const daily = await dailyRepository.findBySameDate(
+        localDaily.day,
+        32400,
+        req.userId
+      );
       // 같은 Daily 가 존재하는 경우 -> UPDATE Daily
       // 같은 Daily 가 존재하지 않는 경우 -> CREATE Daily
       await createDailyTimelineTask(localDaily, req);
