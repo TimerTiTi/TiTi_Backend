@@ -6,6 +6,7 @@ import { dropUser } from "../data/user.js";
 import { dropDaily } from "../data/daily.js";
 import { dropTask } from "../data/task.js";
 import { dropTimeline } from "../data/timeline.js";
+import { dropLogs } from "../data/syncLog.js";
 
 const router = express.Router();
 
@@ -20,6 +21,8 @@ async function dropAll(req, res) {
   console.log("DROP TIMELINE COMPLETE");
   const dropDailyStatus = await dropDaily();
   console.log("DROP DAILY COMPLETE");
+  const dropLogStatus = await dropLogs();
+  console.log("DROP SYNCLOG COMPLETE");
   const dropUserStatus = await dropUser();
   console.log("DROP USER COMPLETE");
   res.sendStatus(204);

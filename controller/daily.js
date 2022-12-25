@@ -3,6 +3,7 @@ import { Daily } from "../class/daily.js";
 import * as dailyRepository from "../data/daily.js";
 import * as timelineRepository from "../data/timeline.js";
 import * as taskRepository from "../data/task.js";
+import * as syncLogController from "../controller/syncLog.js";
 
 export async function createDailys(req, res) {
   console.log(`User(${req.userId})`);
@@ -39,75 +40,87 @@ export async function createDailyTimelineTask(daily, req) {
   }
 }
 
+export async function updateDailyTimelineAndDeleteCreateTask(DBdaily, req) {
+  // UPDATE Daily
+  const updatedDaily = await dailyRepository.updateDailyById(
+    DBDaily.id,
+    localDaily
+  );
+  console.log(`UPDATE Daily(${DBDaily.id})`);
+  // UPDATE Timeline
+  const updatedTimeline = await timelineRepository.updateTimelineByDailyId(
+    DBDaily.id,
+    localDaily
+  );
+  console.log(`UPDATE Timeline(${updatedTimeline})`);
+  // DELETE Tasks
+  const deletedTasks = await taskRepository.deleteAllByDailyIdAndUserId(
+    DBDaily.id,
+    DBDaily.userId
+  );
+  console.log(`DELETE  ${deletedTasks} Tasks from Daily(${DBDaily.id})`);
+  // CREATE Tasks
+  for (const key in localDaily.tasks) {
+    const createdTaskId = await taskRepository.createTask(
+      key,
+      localDaily.tasks[key],
+      req.userId,
+      DBDaily.id
+    );
+    console.log(`CREATE Task(${createdTaskId})`);
+  }
+}
+
 export async function uploadDailys(req, res) {
   console.log(`User(${req.userId})`);
   const dailys = req.body;
   let success = true;
-  let errorIds = [];
+  let errorIds = Array();
+  let uploadCount = 0;
   for (const dailyObject of dailys) {
     const localDaily = new Daily(dailyObject);
     // daily.id 값 확인
     if (localDaily.id == null) {
-      // CREATE Daily
+      // 같은 Day 의 Daily 가 있는지 확인
+      // 같은 Daily 가 존재하는 경우 -> UPDATE Daily
+      // 같은 Daily 가 존재하지 않는 경우 -> CREATE Daily
       await createDailyTimelineTask(localDaily, req);
-    } else {
-      // check status
-      if (localDaily.status === "uploaded") {
-        continue;
-      }
-      // find Daily by id
-      const DBDaily = await dailyRepository.findById(localDaily.id);
-      // Check Daily
-      if (!DBDaily) {
-        // Error: id 값 존재하나 DB 내 없는 경우
-        console.log(`Error[uploadDailys]: not exist Daily(${localDaily.id})`);
-        errorIds.push(localDaily.id);
-        success = false;
-        continue;
-      }
-      // Check userID
-      if (DBDaily.userId !== req.userId) {
-        console.log(
-          `Error[uploadDailys]: defferent userId(${req.userId}) with Daily(${DBDaily.id})'s userId(${DBDaily.userId})`
-        );
-        errorIds.push(DBDaily.id);
-        success = false;
-        continue;
-      }
-      // UPDATE Daily
-      const updatedDaily = await dailyRepository.updateDailyById(
-        DBDaily.id,
-        localDaily
-      );
-      console.log(`UPDATE Daily(${DBDaily.id})`);
-      // UPDATE Timeline
-      const updatedTimeline = await timelineRepository.updateTimelineByDailyId(
-        DBDaily.id,
-        localDaily
-      );
-      console.log(`UPDATE Timeline(${updatedTimeline})`);
-      // DELETE Tasks
-      const deletedTasks = await taskRepository.deleteAllByDailyIdAndUserId(
-        DBDaily.id,
-        DBDaily.userId
-      );
-      console.log(`DELETE  ${deletedTasks} Tasks from Daily(${DBDaily.id})`);
-      // CREATE Tasks
-      for (const key in localDaily.tasks) {
-        const createdTaskId = await taskRepository.createTask(
-          key,
-          localDaily.tasks[key],
-          req.userId,
-          DBDaily.id
-        );
-        console.log(`CREATE Task(${createdTaskId})`);
-      }
+      uploadCount += 1;
+      continue;
     }
+    // check status
+    if (localDaily.status === "uploaded") {
+      continue;
+    }
+    // find Daily by (id, userId)
+    const DBDaily = await dailyRepository.findByIdAndUserId(
+      localDaily.id,
+      req.userId
+    );
+    // Check Daily
+    if (!DBDaily) {
+      // Error: id 값 존재하나 DB 내 없는 경우
+      console.log(`** Error[uploadDailys]: not exist Daily(${localDaily.id})`);
+      errorIds.push(localDaily.id);
+      success = false;
+      continue;
+    }
+    // update Daily
+    await updateDailyTimelineAndDeleteCreateTask(DBDaily, req);
+    uploadCount += 1;
   }
+  // CREATE SyncLog
+  const dailysCount = await dailyRepository.getCountByUserId(req.userId);
+  const createdLog = await syncLogController.createLog(
+    dailysCount,
+    uploadCount,
+    req.userId
+  );
+
   if (success) {
     res.sendStatus(200);
   } else {
-    return res.status(400).json({ error: `${errorIds}` });
+    return res.status(207).json({ error: `${JSON.stringify(errorIds)}` });
   }
 }
 

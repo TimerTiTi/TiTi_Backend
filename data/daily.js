@@ -16,21 +16,29 @@ export async function createDaily(daily, userId) {
 }
 
 export async function getAllByUserid(userId) {
-  // return Daily.findAll({
-  //   where: { userId },
-  // });
-  console.log("query style");
-  const users = await sequelize.query(
-    `SELECT * FROM dailies WHERE userId = ${userId}`,
-    {
-      type: QueryTypes.SELECT,
-    }
-  );
-  return users;
+  return Daily.findAll({
+    where: { userId },
+  });
+  // console.log("query style");
+  // const users = await sequelize.query(
+  //   `SELECT * FROM dailies WHERE userId = ${userId}`,
+  //   {
+  //     type: QueryTypes.SELECT,
+  //   }
+  // );
+  // return users;
 }
 
-export async function findById(id) {
-  return Daily.findByPk(id);
+export async function getCountByUserId(userId) {
+  return Daily.count({
+    where: { userId },
+  });
+}
+
+export async function findByIdAndUserId(id, userId) {
+  return Daily.findOne({
+    where: { id, userId },
+  });
 }
 
 export async function updateDailyById(id, localDaily) {

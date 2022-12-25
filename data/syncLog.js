@@ -1,6 +1,4 @@
 import { SyncLog } from "../schema/syncLog.js";
-import { sequelize } from "../db/database.js";
-import { QueryTypes } from "sequelize";
 
 export async function createSyncLog(dailysCount, uploadCount, userId) {
   return SyncLog.create({
@@ -11,11 +9,9 @@ export async function createSyncLog(dailysCount, uploadCount, userId) {
 }
 
 export async function getLatestLog(userId) {
-  const log = await sequelize.query(
-    `SELECT * FROM syncLogs WHERE userId = ${userId} ORDER BY creatadAt LIMIT 1`,
-    { type: QueryTypes.SELECT }
-  );
-  return log;
+  return SyncLog.findOne({
+    order: [["createdAt", "DESC"]],
+  });
 }
 
 // 관리자용 api
