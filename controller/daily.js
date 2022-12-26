@@ -20,7 +20,7 @@ export async function createDailyTimelineTask(daily, req) {
   daily.status = "uploaded";
   // Daily 생성
   const createdDailyId = await dailyRepository.createDaily(daily, req.userId);
-  // console.log(`CREATE Daily(${createdDailyId})`);
+  console.log(`CREATE Daily(${createdDailyId})`);
   // Daily -> Tineline 생성
   const createdTimelineId = await timelineRepository.createTimeline(
     daily.timeline,
@@ -47,7 +47,7 @@ export async function updateDailyTimelineAndDeleteCreateTask(
 ) {
   // UPDATE Daily
   const updatedDaily = await dailyRepository.updateDailyById(id, localDaily);
-  // console.log(`UPDATE Daily(${id})`);
+  console.log(`UPDATE Daily(${id})`);
   // UPDATE Timeline
   const updatedTimeline = await timelineRepository.updateTimelineByDailyId(
     id,
@@ -86,6 +86,8 @@ export async function findLastDaily(DBDaily, localDaily) {
 export async function uploadDailys(req, res) {
   console.log(`User(${req.userId})`);
   const dailys = req.body;
+  const GMTSeconds = req.query.gmt;
+
   let success = true;
   let errorIds = Array();
   let uploadCount = 0;
@@ -96,7 +98,7 @@ export async function uploadDailys(req, res) {
       // 같은 Day 의 Daily 가 있는지 확인
       const dailys = await dailyRepository.findBySameDate(
         localDaily.day,
-        32400,
+        GMTSeconds,
         req.userId
       );
       // 같은 Daily 가 존재하지 않는 경우 -> CREATE Daily
@@ -112,7 +114,7 @@ export async function uploadDailys(req, res) {
       const targetDaily = await findLastDaily(dailys[0], localDaily);
       // console.log(`* MERGE DAILY (${targetDaily.id})`);
       await updateDailyTimelineAndDeleteCreateTask(
-        targetDaily.id,
+        dailys[0].id,
         targetDaily,
         req
       );
