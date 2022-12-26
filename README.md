@@ -1,4 +1,4 @@
-# TiTi_Backend API
+# TiTi_Backend API (v0.2)
 
 `Node.js` `express` `MySQL` `sequlize`
 
@@ -31,6 +31,7 @@
 - 200 : ok
 - 201 : create
 - 204 : no content (delete)
+- 207 : upload dailys success but something wrong
 
 ### 400
 
@@ -46,6 +47,7 @@
 # Error
 
 ```json
+207 : { error: "[281,282]" }
 400 : { error: `Invalid ${errors.array()[0].param}` }
 400 : { error: `${errorIds}` }
 401 : { error: "Authentication Error" }
@@ -75,7 +77,7 @@ limit : 50mb
 
 # Schema
 
-![ERD](erd.png "ERD")
+![ERD](erd2.png "ERD")
 
 ### user
 
@@ -363,6 +365,136 @@ Task.belongsTo(User);
 Task.belongsTo(Daily);
 ```
 
+### syncLog
+
+```javascript
+export const SyncLog = sequelize.define("syncLog", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  dailysCount: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  uploadCount: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    get() {
+      return (
+        moment(this.getDataValue("createdAt"))
+          .utc()
+          .format("YYYY-MM-DDTHH:mm:ss") + "Z"
+      );
+    },
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    get() {
+      return (
+        moment(this.getDataValue("updatedAt"))
+          .utc()
+          .format("YYYY-MM-DDTHH:mm:ss") + "Z"
+      );
+    },
+  },
+});
+SyncLog.belongsTo(User);
+```
+
+### recordTime
+
+```javascript
+export const RecordTime = sequelize.define("recordTime", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  settedTimerTime: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  settedGoalTime: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  savedSumTime: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  savedTimerTime: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  savedStopwatchTime: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  savedGoalTime: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  recordingMode: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  recordTask: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  recordTaskFromTime: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  recording: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
+  recordStartAt: {
+    type: DataTypes.DATE,
+    get() {
+      return (
+        moment(this.getDataValue("recordStartAt"))
+          .utc()
+          .format("YYYY-MM-DDTHH:mm:ss") + "Z"
+      );
+    },
+  },
+  recordStartTimeline: {
+    type: DataTypes.JSON,
+    allowNull: false,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    get() {
+      return (
+        moment(this.getDataValue("createdAt"))
+          .utc()
+          .format("YYYY-MM-DDTHH:mm:ss") + "Z"
+      );
+    },
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    get() {
+      return (
+        moment(this.getDataValue("updatedAt"))
+          .utc()
+          .format("YYYY-MM-DDTHH:mm:ss") + "Z"
+      );
+    },
+  },
+});
+RecordTime.belongsTo(User);
+```
+
 # API
 
 ## /auth
@@ -410,135 +542,14 @@ Task.belongsTo(Daily);
 
 ## /dailys
 
-### POST /dailys/create (with Token)
+### POST /dailys/upload?gmt=32400 (with Token)
+
+gmt: 국가별 GMT seconds (한국: +9\*3600 = +32400)
 
 <details>
 <summary>request</summary>
-<pre language="json"><code class="language-json">[
-  {
-    "timeline" : [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      2400,
-      2700,
-      2460,
-      1500,
-      2100,
-      2400,
-      1800,
-      3600,
-      60,
-      2100
-    ],
-    "maxTime" : 5460,
-    "day" : "2021-06-26T15:00:00Z",
-    "tasks" : {
-      "TiTi Programming" : 17640,
-      "TiTi update" : 5460
-    },
-    "taskHistorys" : {
-      "TiTi Programming" : [
-        {
-          "endDate" : "2021-06-27T05:40:00Z",
-          "startDate" : "2021-06-27T05:00:00Z"
-        },
-        {
-          "endDate" : "2021-06-27T06:45:00Z",
-          "startDate" : "2021-06-27T06:00:00Z"
-        },
-        {
-          "endDate" : "2021-06-27T07:41:00Z",
-          "startDate" : "2021-06-27T07:00:00Z"
-        },
-        {
-          "endDate" : "2021-06-27T08:25:00Z",
-          "startDate" : "2021-06-27T08:00:00Z"
-        },
-        {
-          "endDate" : "2021-06-27T09:35:00Z",
-          "startDate" : "2021-06-27T09:00:00Z"
-        },
-        {
-          "endDate" : "2021-06-27T10:40:00Z",
-          "startDate" : "2021-06-27T10:00:00Z"
-        },
-        {
-          "endDate" : "2021-06-27T13:35:00Z",
-          "startDate" : "2021-06-27T13:02:00Z"
-        },
-        {
-          "endDate" : "2021-06-27T14:35:00Z",
-          "startDate" : "2021-06-27T14:00:00Z"
-        }
-      ],
-      "TiTi update" : [
-        {
-          "endDate" : "2021-06-27T13:01:00Z",
-          "startDate" : "2021-06-27T11:30:00Z"
-        }
-      ]
-    }
-  },
-  {
-    "timeline" : [
-      1369,
-      806,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      2905,
-      1753,
-      885,
-      2280,
-      0,
-      2591,
-      0,
-      0,
-      1901,
-      3397,
-      2311,
-      1849
-    ],
-    "maxTime" : 4990,
-    "day" : "2021-06-29T00:55:04Z",
-    "tasks" : {
-      "This is CodingTest" : 1476,
-      "TiTi Programming" : 10110,
-      "Swift Algorithm" : 10458
-    }
-  }
-]
-</code></pre></details>
-<br/>
-<details>
-<summary>response</summary>
-<pre language="json"><code class="language-json">created (statusCode : 201)
-</code></pre></details>
-
-### POST /dailys/upload (with Token)
-
-<details>
-<summary>request</summary>
-<pre language="json"><code class="language-json">[
+<pre language="json"><code class="language-json">param : [gmt: 32400], body : 
+[
     {
         "day": "2021-06-26T15:00:00Z",
         "id": 1,
@@ -661,7 +672,8 @@ Task.belongsTo(Daily);
 <br/>
 <details>
 <summary>response</summary>
-<pre language="json"><code class="language-json">ok (statusCode : 200)
+<pre language="json"><code class="language-json">(statusCode : 200) or
+(statusCode : 207)
 </code></pre></details>
 
 ### GET /dailys (with Token)
@@ -792,6 +804,124 @@ Task.belongsTo(Daily);
         "userId": 1
     }
 ]
+</code></pre></details>
+
+## /syncLog
+
+### GET /syncLog (with Token)
+
+<details>
+<summary>response</summary>
+<pre language="json"><code class="language-json">{
+    "createdAt": "2022-12-26T06:52:10Z",
+    "updatedAt": "2022-12-26T06:52:10Z",
+    "id": 4,
+    "dailysCount": 284,
+    "uploadCount": 7,
+    "userId": 1
+}
+</code></pre></details>
+
+## /recordTime
+
+### POST /recordTime (with Token)
+
+<details>
+<summary>request</summary>
+<pre language="json"><code class="language-json">{
+  "recordingMode" : 2,
+  "recordStartTimeline" : [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    600,
+    3205,
+    0,
+    0,
+    0,
+    2870,
+    3438,
+    2668,
+    3290,
+    748,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "recordTaskFromTime" : 24237,
+  "savedSumTime" : 24237,
+  "settedTimerTime" : 120,
+  "savedTimerTime" : 120,
+  "savedGoalTime" : -9837,
+  "savedStopwatchTime" : 24237,
+  "recordTask" : "TiTi 개발",
+  "settedGoalTime" : 14400,
+  "recording" : false,
+  "recordStartAt" : "2022-12-23T13:10:06Z"
+}
+</code></pre></details>
+<br/>
+<details>
+<summary>response</summary>
+<pre language="json"><code class="language-json">(statusCode : 200) or
+(statusCode : 201)
+</code></pre></details>
+
+### GET /recordTime (with Token)
+
+<details>
+<summary>response</summary>
+<pre language="json"><code class="language-json">{
+    "recordStartAt": "2022-12-23T13:10:06Z",
+    "createdAt": "2022-12-26T12:01:53Z",
+    "updatedAt": "2022-12-26T12:13:28Z",
+    "id": 1,
+    "settedTimerTime": 120,
+    "settedGoalTime": 14400,
+    "savedSumTime": 24237,
+    "savedTimerTime": 120,
+    "savedStopwatchTime": 24237,
+    "savedGoalTime": -9837,
+    "recordingMode": 2,
+    "recordTask": "TiTi 개발",
+    "recordTaskFromTime": 24237,
+    "recording": false,
+    "recordStartTimeline": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        600,
+        3205,
+        0,
+        0,
+        0,
+        2870,
+        3438,
+        2668,
+        3290,
+        748,
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "userId": 1
+}
 </code></pre></details>
 
 ## /timelines
@@ -978,3 +1108,40 @@ Task.belongsTo(Daily);
     }
 ]
 </code></pre></details>
+
+<br/>
+
+# upload Dailys 로직
+
+for daily in dailys
+
+1. class Dailys 생성
+2. daily.id 값 null 여부 확인
+3. null 인 경우 4. 같은 날짜의 Daily 존재 여부 확인 5. 같은 날짜의 Daily 가 없는 경우 -> create, continue 6. 같은 날짜의 Daily 가 있는 경우 -> totalTime 값이 높은 daily 판별 -> update Daily, continue
+4. daily.status 값 확인
+5. daily.status == uploaded 인 경우 -> continue
+6. DB -> get daily by (id, userId)
+7. DB daily 값이 없는 경우 -> success = false, errorIds: id 추가 -> continue
+8. update daily
+9. update timeline
+10. delete tasks
+11. create tasks
+12. 총 Daily 개수, update 및 create 된 Daily 개수 -> create syncLog, continue
+
+<br/>
+
+# iso8601 같은날 Daily 분별 로직
+
+daily.day 시각은 그리니치 천문대 기준 절대시각 값이다 (GMT 값 제거된)
+TiTi 를 사용하는 이용자의 시간대에 따라 날짜 범위가 달라진다.
+따라서 절대시각과 GMT 값을 통해 날짜를 계산하는 로직.
+API 사용시 기기내에서 GMT 값을 계산하여 보낸 후 Server 내에서 계산하는 식.
+
+예시: 한국 기준 `2022-12-26 00:15:00` 시각 -> 12/26 날짜 구하는 로직
+
+1. daily.day :절대시각 (`2022-12-25T15:15:00Z`)
+2. localDate = daily.day + GMT (한국: +32400) :국가 상대시각 (`2022-12-26T00:15:00Z`)
+3. localZeroDate = localDate 에서 시, 분, 초 제거 :국가 상대시각 (`2022-12-26T00:00:00Z`)
+4. startDate = localZeroDate - GMT (한국: +32400) :절대시각 (`2022-12-25T15:00:00Z`)
+5. endDate = localZeroDate + 1일 :절대시각 (`2022-12-16T15:00:00Z`)
+   최종적으로 DB 내에서 `date < endDate and date >= startDate` 쿼리를 통해 같은날의 기록을 검색할 수 있다.
