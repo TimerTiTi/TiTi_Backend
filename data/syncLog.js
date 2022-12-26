@@ -10,6 +10,7 @@ export async function createSyncLog(dailysCount, uploadCount, userId) {
 
 export async function getLatestLog(userId) {
   return SyncLog.findOne({
+    where: { userId },
     order: [["createdAt", "DESC"]],
   });
 }

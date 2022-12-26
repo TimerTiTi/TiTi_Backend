@@ -153,7 +153,7 @@ export async function uploadDailys(req, res) {
   if (success) {
     res.sendStatus(200);
   } else {
-    return res.status(207).json({ error: `${JSON.stringify(errorIds)}` });
+    res.status(207).json({ error: `${JSON.stringify(errorIds)}` });
   }
 }
 
