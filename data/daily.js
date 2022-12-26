@@ -41,9 +41,10 @@ export async function findByIdAndUserId(id, userId) {
   });
 }
 
-export async function findBySameDate(day, GMTSeconds, userId) {
+export async function findBySameDate(day, GMT, userId) {
+  let GMTSeconds = parseInt(GMT);
   let localeDate = new Date(day);
-  localeDate.setSeconds(day.getSeconds() + GMTSeconds);
+  localeDate.setSeconds(localeDate.getSeconds() + GMTSeconds);
   const localeZeroDate = new Date(localeDate.toISOString().split("T")[0]);
   let startDate = new Date(localeZeroDate);
   startDate.setSeconds(startDate.getSeconds() - GMTSeconds);
@@ -51,7 +52,7 @@ export async function findBySameDate(day, GMTSeconds, userId) {
   endDate.setDate(endDate.getDate() + 1);
   // SELECT startDate ~ endDate Daily
   const dailys = await sequelize.query(
-    `SELECT * FROM dailies WHERE day < '${endDate.toISOString()}' and day > '${startDate.toISOString()}'`,
+    `SELECT * FROM dailies WHERE userId = ${userId} and day < '${endDate.toISOString()}' and day >= '${startDate.toISOString()}'`,
     {
       type: QueryTypes.SELECT,
     }
