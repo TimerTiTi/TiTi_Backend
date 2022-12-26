@@ -44,18 +44,19 @@ export async function findByIdAndUserId(id, userId) {
 export async function findBySameDate(day, GMTSeconds, userId) {
   let localeDate = new Date(day);
   localeDate.setSeconds(day.getSeconds() + GMTSeconds);
-
   const localeZeroDate = new Date(localeDate.toISOString().split("T")[0]);
-
   let startDate = new Date(localeZeroDate);
-  startDate.setSeconds(localeZeroDate.getSeconds() - GMTSeconds);
+  startDate.setSeconds(startDate.getSeconds() - GMTSeconds);
   let endDate = new Date(startDate);
-  endDate.setSeconds(startDate.getDate() + 1);
-
-  console.log(day); // 절대시각
-  console.log(localeDate); // 사용자기준 시각
-  console.log(localeZeroDate); // 사용자기준 zeroDate
-  console.log(startDate, endDate); // 절대시각 구간 -> 쿼리에서 사용
+  endDate.setDate(endDate.getDate() + 1);
+  // SELECT startDate ~ endDate Daily
+  const dailys = await sequelize.query(
+    `SELECT * FROM dailies WHERE day < '${endDate.toISOString()}' and day > '${startDate.toISOString()}'`,
+    {
+      type: QueryTypes.SELECT,
+    }
+  );
+  return dailys;
 }
 
 export async function updateDailyById(id, localDaily) {
