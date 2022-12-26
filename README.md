@@ -1117,16 +1117,19 @@ for daily in dailys
 
 1. class Dailys 생성
 2. daily.id 값 null 여부 확인
-3. null 인 경우 4. 같은 날짜의 Daily 존재 여부 확인 5. 같은 날짜의 Daily 가 없는 경우 -> create, continue 6. 같은 날짜의 Daily 가 있는 경우 -> totalTime 값이 높은 daily 판별 -> update Daily, continue
-4. daily.status 값 확인
-5. daily.status == uploaded 인 경우 -> continue
-6. DB -> get daily by (id, userId)
-7. DB daily 값이 없는 경우 -> success = false, errorIds: id 추가 -> continue
-8. update daily
-9. update timeline
-10. delete tasks
-11. create tasks
-12. 총 Daily 개수, update 및 create 된 Daily 개수 -> create syncLog, continue
+3. null 인 경우
+4. 같은 날짜의 Daily 존재 여부 확인
+5. 같은 날짜의 Daily 가 없는 경우 -> create, continue
+6. 같은 날짜의 Daily 가 있는 경우 -> totalTime 값이 높은 daily 판별 -> update Daily, continue
+7. daily.status 값 확인
+8. daily.status == uploaded 인 경우 -> continue
+9. DB -> get daily by (id, userId)
+10. DB daily 값이 없는 경우 -> success = false, errorIds: id 추가 -> continue
+11. update daily
+12. update timeline
+13. delete tasks
+14. create tasks
+15. 총 Daily 개수, update 및 create 된 Daily 개수 -> create syncLog, continue
 
 <br/>
 
@@ -1143,5 +1146,5 @@ API 사용시 기기내에서 GMT 값을 계산하여 보낸 후 Server 내에�
 2. localDate = daily.day + GMT (한국: +32400) :국가 상대시각 (`2022-12-26T00:15:00Z`)
 3. localZeroDate = localDate 에서 시, 분, 초 제거 :국가 상대시각 (`2022-12-26T00:00:00Z`)
 4. startDate = localZeroDate - GMT (한국: +32400) :절대시각 (`2022-12-25T15:00:00Z`)
-5. endDate = localZeroDate + 1일 :절대시각 (`2022-12-16T15:00:00Z`)
+5. endDate = startDate + 1일 :절대시각 (`2022-12-26T15:00:00Z`)
    최종적으로 DB 내에서 `date < endDate and date >= startDate` 쿼리를 통해 같은날의 기록을 검색할 수 있다.
