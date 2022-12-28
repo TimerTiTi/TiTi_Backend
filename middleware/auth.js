@@ -25,6 +25,7 @@ export const isAuth = async (req, res, next) => {
     }
     req.userId = user.id;
     req.token = token;
+    console.log(`User(${user.id})`);
     next();
   });
 };
