@@ -6,7 +6,6 @@ import * as taskRepository from "../data/task.js";
 import * as syncLogController from "../controller/syncLog.js";
 
 export async function createDailys(req, res) {
-  console.log(`User(${req.userId})`);
   const dailys = req.body;
   for (const dailyObject of dailys) {
     const daily = new Daily(dailyObject);
