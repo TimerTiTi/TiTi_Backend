@@ -72,13 +72,37 @@ export async function updateDailyTimelineAndDeleteCreateTask(
 }
 
 export async function findLastDaily(DBDaily, localDaily) {
-  // 마지막에 생성된 Daily 여야 하지만 로직이 매우 복잡해지므로 totalTime 값을 기준으로 설정
-  const dbTotalTime = DBDaily.timeline.reduce((a, b) => a + b, 0);
-  const localTotalTime = localDaily.timeline.reduce((a, b) => a + b, 0);
-  if (dbTotalTime > localTotalTime) {
-    return DBDaily;
-  } else {
+  // taskHistorys 비교가 안되는 경우 -> totalTime 값 기준으로 설정
+  if (!DBDaily.taskHistorys || !localDaily.taskHistorys) {
+    const dbTotalTime = DBDaily.timeline.reduce((a, b) => a + b, 0);
+    const localTotalTime = localDaily.timeline.reduce((a, b) => a + b, 0);
+    if (dbTotalTime > localTotalTime) {
+      return DBDaily;
+    } else {
+      return localDaily;
+    }
+  }
+
+  // Daily 내 taskHistorys 의 startDate 값이 큰 Daily 를 기준으로 설정
+  const dbSortedHistorys = Object.values(DBDaily.taskHistorys)
+    .flatMap((obj) => obj)
+    .sort((a, b) => {
+      a.startDate < b.startDate;
+    });
+  const dbStartDate = dbSortedHistorys[dbSortedHistorys.length - 1].startDate;
+
+  const localSortedHistorys = Object.values(localDaily.taskHistorys)
+    .flatMap((obj) => obj)
+    .sort((a, b) => {
+      a.startDate < b.startDate;
+    });
+  const localStartDate =
+    localSortedHistorys[localSortedHistorys.length - 1].startDate;
+
+  if (localStartDate > dbStartDate) {
     return localDaily;
+  } else {
+    return DBDaily;
   }
 }
 
