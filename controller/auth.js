@@ -30,7 +30,7 @@ export async function login(req, res) {
   const { username, password } = req.body;
   const user = await userRepository.findByUsername(username);
   if (!user) {
-    return res.status(401).json(INVALID_AUTH);
+    return res.status(404).json(INVALID_AUTH);
   }
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
