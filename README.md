@@ -1,4 +1,4 @@
-# TiTi_Backend API (v0.2)
+# TiTi_Backend API (v0.3)
 
 `Node.js` `express` `MySQL` `sequlize`
 
@@ -1118,9 +1118,9 @@ for daily in dailys
 1. class Dailys 생성
 2. daily.id 값 null 여부 확인
 3. null 인 경우
-  4. 같은 날짜의 Daily 존재 여부 확인
-  5. 같은 날짜의 Daily 가 없는 경우 -> create, continue
-  6. 같은 날짜의 Daily 가 있는 경우 -> totalTime 값이 높은 daily 판별 -> update Daily, continue
+4. 같은 날짜의 Daily 존재 여부 확인
+5. 같은 날짜의 Daily 가 없는 경우 -> create, continue
+6. 같은 날짜의 Daily 가 있는 경우 -> totalTime 값이 높은 daily 판별 -> update Daily, continue
 7. daily.status 값 확인
 8. daily.status == uploaded 인 경우 -> continue
 9. DB -> get daily by (id, userId)
