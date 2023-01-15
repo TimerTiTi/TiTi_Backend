@@ -24,4 +24,8 @@ export const config = {
     database: required("DB_DATABASE"),
     password: required("DB_PASSWORD"),
   },
+  gmail: {
+    user: required("NODEMAILER_USER"),
+    pass: required("NODEMAILER_PASS"),
+  },
 };
