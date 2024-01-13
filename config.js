@@ -28,4 +28,7 @@ export const config = {
     user: required("NODEMAILER_USER"),
     pass: required("NODEMAILER_PASS"),
   },
+  slack: {
+    webhookURL: required("SLACK_WEBHOOK_URL"),
+  }
 };
