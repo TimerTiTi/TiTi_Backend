@@ -1,9 +1,10 @@
-import {} from "express-async-errors";
+import { } from "express-async-errors";
 import { Daily } from "../class/daily.js";
 import * as dailyRepository from "../data/daily.js";
 import * as timelineRepository from "../data/timeline.js";
 import * as taskRepository from "../data/task.js";
 import * as syncLogController from "../controller/syncLog.js";
+import * as slackWebHock from "../slackWebHock.js";
 
 export async function createDailys(req, res) {
   const dailys = req.body;
@@ -156,6 +157,7 @@ export async function uploadDailys(req, res) {
     // Check Daily
     if (!DBDaily) {
       // Error: id 값 존재하나 DB 내 없는 경우
+      slackWebHock.post(207, req.url, "/controller/daily.js", `Daily(${localDaily.id}) not exist`);
       console.log(`** Error[uploadDailys]: not exist Daily(${localDaily.id})`);
       errorIds.push(localDaily.id);
       success = false;
