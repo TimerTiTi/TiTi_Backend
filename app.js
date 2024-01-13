@@ -12,6 +12,7 @@ import taskRouter from "./router/task.js";
 import masterRouter from "./router/master.js";
 import syncLogRouter from "./router/syncLog.js";
 import recordTimeRouter from "./router/recordTime.js";
+import * as slackWebHock from "./slackWebHock.js";
 
 const app = express();
 // parser 용량제한 해제
@@ -43,10 +44,12 @@ const NOTFOUND_ERROR = { error: "Not Found" };
 const INTERNAL_ERROR = { error: "Internal Server Error" };
 // NOTFOUND_ERROR
 app.use((req, res, next) => {
+  slackWebHock.post(404, req.url, "app.js", NOTFOUND_ERROR.error);
   return res.status(404).json(NOTFOUND_ERROR);
 });
 // INTERNAL_ERROR
 app.use((error, req, res, next) => {
+  slackWebHock.post(500, req.url, "app.js", error);
   console.error(error);
   return res.status(500).json(INTERNAL_ERROR);
 });
