@@ -5,8 +5,8 @@ import Slack from "slack-node";
 const slack = new Slack();
 slack.setWebhook(config.slack.webhookURL);
 
-export async function post(statusCode, url, from, message) {
+export async function post(method, url, statusCode, from, message) {
     slack.webhook({
-        text: `${url}: ${statusCode}\nwhere: ${from}\nerror: ${message}`,
+        text: `----- ${method} ${url}: ${statusCode}\nwhere: ${from}\nerror: ${message}`,
     }, function (err, response) { })
 }
