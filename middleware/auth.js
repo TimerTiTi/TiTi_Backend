@@ -20,7 +20,7 @@ export const isAuth = async (req, res, next) => {
   jwt.verify(token, config.jwt.secretKey, async (error, decoded) => {
     if (error) {
       const error = `token 정보를 읽을 수 없습니다(${authHeader})`;
-      const check = `- python jsonwebtoken 라이브러리, node.js config.jwt.secretKey 코드 확인 필요`;
+      const check = `- token이 만료된 경우 (정상)\n- python jsonwebtoken 라이브러리, node.js config.jwt.secretKey 코드 확인 필요`;
       slackWebHock.post(req.method, req.originalUrl, 401, "/middleware/auth.js (isAuth)", `${error}\ncheck\n${check}`);
       console.log("jwt 정보가 이상");
       return res.status(401).json(AUTH_ERROR); // jwt 정보가 이상한 경우
