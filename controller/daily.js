@@ -157,7 +157,7 @@ export async function uploadDailys(req, res) {
     // Check Daily
     if (!DBDaily) {
       // Error: id 값 존재하나 DB 내 없는 경우
-      slackWebHock.post(207, req.url, "/controller/daily.js", `Daily(${localDaily.id}) not exist`);
+      slackWebHock.post(req.method, req.originalUrl, 207, "/controller/daily.js", `Daily(${localDaily.id}) not exist`);
       console.log(`** Error[uploadDailys]: not exist Daily(${localDaily.id})`);
       errorIds.push(localDaily.id);
       success = false;

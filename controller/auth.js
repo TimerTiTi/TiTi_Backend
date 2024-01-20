@@ -83,12 +83,16 @@ export async function login(req, res) {
   const { username, password } = req.body;
   const user = await userRepository.findByUsername(username);
   if (!user) {
-    slackWebHock.post(404, req.url, "/controller/auth.js", "username inavalid");
+    const error = `users 내 존재하지 않는 username으로 로그인 요청(${username})`;
+    const check = `- SELECT * FROM titi.users WHERE username="${username}"; 확인 필요`;
+    slackWebHock.post(req.method, req.originalUrl, 404, "/controller/auth.js (login)", `${error}\ncheck\n${check}`);
     return res.status(404).json(INVALID_AUTH);
   }
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
-    slackWebHock.post(404, req.url, "/controller/auth.js", "password inavalid");
+    const error = `user(${user.id}) 패스워드값이 동일하지 않음(${password})`;
+    const check = `- SELECT * FROM titi.users WHERE id = ${user.id}; 확인 필요`;
+    slackWebHock.post(req.method, req.originalUrl, 404, "/controller/auth.js (login)", `${error}\ncheck\n${check}`);
     return res.status(404).json(INVALID_AUTH);
   }
   // success
