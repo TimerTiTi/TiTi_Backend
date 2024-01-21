@@ -44,10 +44,9 @@ const NOTFOUND_ERROR = { error: "Not Found" };
 const INTERNAL_ERROR = { error: "Internal Server Error" };
 // NOTFOUND_ERROR
 app.use((req, res, next) => {
-  console.log(req.remoteAddress.host);
-  console.log(`** WARNING: host: ${req.headers.host}`);
+  console.log(`** WARNING: id: ${req.ip}`);
   const error = `WARNING: 비정상적인 엔드포인트 접근입니다!`;
-  const check = `- host: ${req.headers.host} 확인 필요`;
+  const check = `- ip: ${req.ip} 확인 필요`;
   slackWebHock.post(req.method, req.originalUrl, 404, "app.js", `${error}\ncheck\n${check}`);
   return res.status(404).json(NOTFOUND_ERROR);
 });
