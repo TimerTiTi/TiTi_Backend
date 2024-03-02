@@ -100,13 +100,16 @@ export async function login(req, res) {
   res.status(200).json({ token, id: user.id, username, email: user.email });
 }
 
-// username 해당하는 유저 확인
-export async function checkUsername(req, res) {
+// username 또는 email에 해당하는 유저 확인
+export async function checkUser(req, res) {
   const username = req.query.username;
-  // username check
-  const foundUsername = await userRepository.findByUsername(username);
+  const email = req.query.email;
 
-  if (foundUsername) {
+  const user = await (username
+    ? userRepository.findByUsername(username)
+    : userRepository.findByEmail(email));
+
+  if (user) {
     res.status(200).json({ data: true, message: "exist" });
   } else {
     res.status(404).json({ data: false, message: "not exist" });
