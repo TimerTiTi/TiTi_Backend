@@ -100,6 +100,19 @@ export async function login(req, res) {
   res.status(200).json({ token, id: user.id, username, email: user.email });
 }
 
+// username 해당하는 유저 확인
+export async function checkUsername(req, res) {
+  const username = req.query.username;
+  // username check
+  const foundUsername = await userRepository.findByUsername(username);
+
+  if (foundUsername) {
+    res.status(200).json({ data: true, message: "exist" });
+  } else {
+    res.status(404).json({ data: false, message: "not exist" });
+  }
+}
+
 // jwt 내 id 값 저장
 function createJwtToken(id) {
   return jwt.sign({ id }, config.jwt.secretKey, {
