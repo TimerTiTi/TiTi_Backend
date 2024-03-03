@@ -116,6 +116,32 @@ export async function checkUser(req, res) {
   }
 }
 
+// password 업데이트
+export async function updatePassword(req, res) {
+  const { username, email, newPassword } = req.body;
+  // username check
+  const foundUsername = await userRepository.findByUsername(username);
+  // email check
+  const foundEmail = await userRepository.findByEmail(email);
+
+  if (!foundUsername || !foundEmail) {
+    return res.status(404).json({ data: false, message: "not exist" });
+  }
+
+  // update password
+  const hashed = await bcrypt.hash(newPassword, config.bcrypt.saltRounds);
+  const updated = await userRepository.updatePassword({
+    username: username,
+    email: email,
+    password: hashed
+  });
+  if (updated) {
+    return res.status(200).json({ data: true, message: "update success" });
+  } else {
+    return res.status(500).json({ data: false, message: "update fail" });
+  }
+}
+
 // jwt 내 id 값 저장
 function createJwtToken(id) {
   return jwt.sign({ id }, config.jwt.secretKey, {

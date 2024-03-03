@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 import { User } from "../schema/user.js";
 
 export async function createUser(user) {
@@ -14,6 +15,10 @@ export async function findByUsername(username) {
 
 export async function findByEmail(email) {
   return User.findOne({ where: { email: email } });
+}
+
+export async function updatePassword({ username, email, password }) {
+  return User.update({ password: password }, { where: { username: username, email: email } });
 }
 
 // 관리자용 api
