@@ -31,5 +31,6 @@ router.post("/signup", validateSignup, authController.signup);
 router.post("/login", validateCredential, authController.login);
 router.get("/master/users", isAuth, authController.getAll);
 router.get("/users", authController.checkUser);
+router.post("/users/password", authController.updatePassword);
 
 export default router;
