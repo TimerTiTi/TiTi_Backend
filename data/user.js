@@ -17,6 +17,10 @@ export async function findByEmail(email) {
   return User.findOne({ where: { email: email } });
 }
 
+export async function findByUsernameEmail({ username, email }) {
+  return User.findOne({ where: { username: username, email: email } });
+}
+
 export async function updatePassword({ username, email, password }) {
   return User.update({ password: password }, { where: { username: username, email: email } });
 }

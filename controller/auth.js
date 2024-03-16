@@ -105,14 +105,25 @@ export async function checkUser(req, res) {
   const username = req.query.username;
   const email = req.query.email;
 
-  const user = await (username
-    ? userRepository.findByUsername(username)
-    : userRepository.findByEmail(email));
-
-  if (user) {
-    res.status(200).json({ data: true, message: "exist" });
+  if (email && username) {
+    const user = await userRepository.findByUsernameEmail({
+      username: username,
+      email: email
+    });
+    if (user) {
+      res.status(200).json({ data: true, message: "exist" });
+    } else {
+      res.status(404).json({ data: false, message: "not exist" });
+    }
+  } else if (username) {
+    const user = await userRepository.findByUsername(username);
+    if (user) {
+      res.status(200).json({ data: true, message: "exist" });
+    } else {
+      res.status(404).json({ data: false, message: "not exist" });
+    }
   } else {
-    res.status(404).json({ data: false, message: "not exist" });
+    res.status(400).json({ data: false, message: "wrong request" });
   }
 }
 
