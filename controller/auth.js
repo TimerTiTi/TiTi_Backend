@@ -130,12 +130,12 @@ export async function checkUser(req, res) {
 // password 업데이트
 export async function updatePassword(req, res) {
   const { username, email, newPassword } = req.body;
-  // username check
-  const foundUsername = await userRepository.findByUsername(username);
-  // email check
-  const foundEmail = await userRepository.findByEmail(email);
+  const user = await userRepository.findByUsernameEmail({
+    username: username,
+    email: email
+  });
 
-  if (!foundUsername || !foundEmail) {
+  if (!user) {
     return res.status(404).json({ data: false, message: "not exist" });
   }
 
@@ -147,6 +147,7 @@ export async function updatePassword(req, res) {
     password: hashed
   });
   if (updated) {
+    slackWebHock.post(req.method, req.originalUrl, 200, "비밀번호 재발급", `user(${user.id})`);
     return res.status(200).json({ data: true, message: "update success" });
   } else {
     return res.status(500).json({ data: false, message: "update fail" });
