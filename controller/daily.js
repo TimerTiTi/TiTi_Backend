@@ -110,7 +110,10 @@ export async function findLastDaily(DBDaily, localDaily) {
 export async function uploadDailys(req, res) {
   console.log(`User(${req.userId})`);
   const dailys = req.body;
-  const GMTSeconds = req.query.gmt;
+  const GMTSecondsWithQueryParam = req.query.gmt;
+  const GMTSecondsWithHeader = req.get("gmt");
+  const GMTSeconds = GMTSecondsWithQueryParam || GMTSecondsWithHeader;
+  console.log(GMTSeconds);
 
   let success = true;
   let errorIds = Array();
