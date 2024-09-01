@@ -74,7 +74,7 @@ export async function updateDailyTimelineAndDeleteCreateTask(
 
 export async function findLastDaily(DBDaily, localDaily) {
   // taskHistorys 비교가 안되는 경우 -> totalTime 값 기준으로 설정
-  if (!DBDaily.taskHistorys || !localDaily.taskHistorys) {
+  if (isEmpty(DBDaily.taskHistorys) || isEmpty(localDaily.taskHistorys)) {
     const dbTotalTime = DBDaily.timeline.reduce((a, b) => a + b, 0);
     const localTotalTime = localDaily.timeline.reduce((a, b) => a + b, 0);
     if (dbTotalTime > localTotalTime) {
@@ -196,3 +196,12 @@ export async function getAll(req, res) {
   const data = await dailyRepository.getAll();
   res.status(200).json(data);
 }
+
+// MARK: 빈값 여부 확인
+var isEmpty = function (value) {
+  if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+    return true
+  } else {
+    return false
+  }
+};
